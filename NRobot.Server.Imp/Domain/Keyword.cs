@@ -38,7 +38,7 @@ namespace NRobot.Server.Imp.Domain
 			//record properties
             KeywordMethod = method;
 			KeywordDocumentation = String.Empty;
-		    FriendlyName = KeywordMethod.Name.Replace("_", " ").ToUpper();
+            FriendlyName = GenerateFriendlyName(KeywordMethod.Name);
 		    ClassInstance = classinstance;
             //get argument names
 	﻿  ﻿  ﻿  	ParameterInfo[] pis = KeywordMethod.GetParameters();
@@ -56,4 +56,17 @@ namespace NRobot.Server.Imp.Domain
 		}
 		
 	}
+
+        private static readonly Regex regexCamelCased = new Regex(@"([A-Z])([A-Z])([a-z])|([a-z])([A-Z])");
+        /// <summary>
+        /// Support camel cased method names with underscores i.e. 
+        /// SomeMethod_withUnderscores(string someParameter) => Some Method with Underscores(someParameter)
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        public string GenerateFriendlyName(string methodName)
+        {
+            var result = methodName.Replace("_", " ");
+            return regexCamelCased.Replace(result, "$1$4 $2$3$5");
+        }
 }
