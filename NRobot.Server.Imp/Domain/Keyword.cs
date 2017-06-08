@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace NRobot.Server.Imp.Domain
@@ -27,7 +28,9 @@ namespace NRobot.Server.Imp.Domain
                 return ArgumentNames.Length;
 			}
 		}
-		
+
+	    public Keyword() {}
+
 		/// <summary>
 		/// Constructor from method
 		/// </summary>
@@ -54,8 +57,6 @@ namespace NRobot.Server.Imp.Domain
                 KeywordDocumentation = method.GetXmlDocumentation(documentation);
             }  
 		}
-		
-	}
 
         private static readonly Regex regexCamelCased = new Regex(@"([A-Z])([A-Z])([a-z])|([a-z])([A-Z])");
         /// <summary>
@@ -69,4 +70,5 @@ namespace NRobot.Server.Imp.Domain
             var result = methodName.Replace("_", " ");
             return regexCamelCased.Replace(result, "$1$4 $2$3$5");
         }
+    }
 }

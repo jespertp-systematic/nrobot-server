@@ -23,22 +23,29 @@ namespace NRobot.Server
 		[STAThread]
 		private static void Main(string[] args)
 		{
-			Log.Debug("Starting NRobot Server");
-			var trayapp = new TrayApplication();
-			if (trayapp.IsRunning)
-			{
-				Application.Run(trayapp);
-			}
-			Application.Exit();
+		    try
+		    {
+		        Log.Debug("Starting NRobot Server");
+		        var trayapp = new TrayApplication();
+		        if (trayapp.IsRunning)
+		        {
+		            Application.Run(trayapp);
+		        }
+		        Application.Exit();
+		    }
+		    catch (Exception exc)
+		    {
+		        Log.Fatal(exc.Message, exc);
+		    }
 		}
 		
 	}
 	
 	public class TrayApplication : ApplicationContext
 	{
-		
-		//fields
-		private NotifyIcon _trayicon;
+        //fields
+        private static readonly ILog Log = LogManager.GetLogger(typeof(TrayApplication));
+        private NotifyIcon _trayicon;
 		private ContextMenuStrip _contextmenu;
 		private ToolStripMenuItem _exitoption;
 		private ToolStripMenuItem _aboutoption;
@@ -82,11 +89,11 @@ namespace NRobot.Server
 				_service = new NRobotService(_serviceConfig);
 				_service.StartAsync();
 				IsRunning = true;
-				
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(String.Format("Unable to start NRobot.Server: \n\n{0}",e.ToString()),"Error",MessageBoxButtons.OK);
+                Log.Fatal(e.Message, e);
+                MessageBox.Show(String.Format("Unable to start NRobot.Server: \n\n{0}",e.ToString()),"Error",MessageBoxButtons.OK);
 				IsRunning = false;
 			}
 		
